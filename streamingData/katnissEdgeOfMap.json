@@ -1,0 +1,24 @@
+[
+  {
+    "streamingeventid": "katnissEdgeOfMapEvent1",
+    "gameid": "gameId1",
+    "tributeid": "9",
+    "heartrate": 110,
+    "painlevel": 0,
+    "hydrationlevel": 10,
+    "hungerlevel": 0,
+    "xcoordinate": 1.1,
+    "ycoordinate": 100.8
+  },
+  {
+    "streamingeventid": "katnissEdgeOfMapEvent2",
+    "gameid": "gameId1",
+    "tributeid": "15",
+    "heartrate": 0,
+    "painlevel": 10,
+    "hydrationlevel": 1,
+    "hungerlevel": 10,
+    "xcoordinate": 40.7,
+    "ycoordinate": 49.04
+  }
+]

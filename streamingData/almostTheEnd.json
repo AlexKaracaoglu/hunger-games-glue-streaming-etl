@@ -1,0 +1,68 @@
+[
+  {
+    "streamingeventid": "almostTheEndEvent1",
+    "gameid": "gameId1",
+    "tributeid": "3",
+    "heartrate": 80,
+    "painlevel": 0,
+    "hydrationlevel": 10,
+    "hungerlevel": 0,
+    "xcoordinate": 50,
+    "ycoordinate": 50
+  },
+  {
+    "streamingeventid": "almostTheEndEvent2",
+    "gameid": "gameId1",
+    "tributeid": "5",
+    "heartrate": 0,
+    "painlevel": 10,
+    "hydrationlevel": 3,
+    "hungerlevel": 10,
+    "xcoordinate": 80,
+    "ycoordinate": 75
+  },
+  {
+    "streamingeventid": "almostTheEndEvent3",
+    "gameid": "gameId1",
+    "tributeid": "4",
+    "heartrate": 0,
+    "painlevel": 10,
+    "hydrationlevel": 10,
+    "hungerlevel": 0,
+    "xcoordinate": 61,
+    "ycoordinate": 51
+  },
+  {
+    "streamingeventid": "almostTheEndEvent4",
+    "gameid": "gameId1",
+    "tributeid": "6",
+    "heartrate": 0,
+    "painlevel": 10,
+    "hydrationlevel": 10,
+    "hungerlevel": 9,
+    "xcoordinate": 50,
+    "ycoordinate": 51
+  },
+  {
+    "streamingeventid": "almostTheEndEvent5",
+    "gameid": "gameId1",
+    "tributeid": "8",
+    "heartrate": 110,
+    "painlevel": 0,
+    "hydrationlevel": 10,
+    "hungerlevel": 9,
+    "xcoordinate": 52.6,
+    "ycoordinate": 50.1
+  },
+  {
+    "streamingeventid": "almostTheEndEvent6",
+    "gameid": "gameId1",
+    "tributeid": "9",
+    "heartrate": 120,
+    "painlevel": 0,
+    "hydrationlevel": 10,
+    "hungerlevel": 0,
+    "xcoordinate": 52.7,
+    "ycoordinate": 50.1
+  }
+]

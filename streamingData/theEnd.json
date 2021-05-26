@@ -1,0 +1,35 @@
+[
+  {
+    "streamingeventid": "theEndEvent1",
+    "gameid": "gameId1",
+    "tributeid": "3",
+    "heartrate": 0,
+    "painlevel": 10,
+    "hydrationlevel": 10,
+    "hungerlevel": 0,
+    "xcoordinate": 50,
+    "ycoordinate": 51
+  },
+  {
+    "streamingeventid": "theEndEvent2",
+    "gameid": "gameId1",
+    "tributeid": "8",
+    "heartrate": 130,
+    "painlevel": 0,
+    "hydrationlevel": 10,
+    "hungerlevel": 0,
+    "xcoordinate": 50,
+    "ycoordinate": 50
+  },
+  {
+    "streamingeventid": "theEndEvent3",
+    "gameid": "gameId1",
+    "tributeid": "9",
+    "heartrate": 120,
+    "painlevel": 0,
+    "hydrationlevel": 10,
+    "hungerlevel": 0,
+    "xcoordinate": 50,
+    "ycoordinate": 50.1
+  }
+]

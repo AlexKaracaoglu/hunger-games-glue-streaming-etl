@@ -1,0 +1,24 @@
+[
+  {
+    "streamingeventid": "afterSponsorHelpsKatnissEvent1",
+    "gameid": "gameId1",
+    "tributeid": "9",
+    "heartrate": 110,
+    "painlevel": 0,
+    "hydrationlevel": 10,
+    "hungerlevel": 0,
+    "xcoordinate": 15.5,
+    "ycoordinate": 76.0
+  },
+  {
+    "streamingeventid": "afterSponsorHelpsKatnissEvent2",
+    "gameid": "gameId1",
+    "tributeid": "7",
+    "heartrate": 110,
+    "painlevel": 0,
+    "hydrationlevel": 10,
+    "hungerlevel": 0,
+    "xcoordinate": 15.3,
+    "ycoordinate": 76.1
+  }
+]

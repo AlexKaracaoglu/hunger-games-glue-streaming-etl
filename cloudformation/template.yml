@@ -1,0 +1,184 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Resources:
+# Kinesis #
+  TributeDataStream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      Name: tribute-data-stream
+      RetentionPeriodHours: 24
+      ShardCount: 1
+
+# DynamoDB #
+  TributeStatusTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "tributeId"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "tributeId"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: "5"
+        WriteCapacityUnits: "5"
+
+  GameDetailsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "gameId"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "gameId"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: "5"
+        WriteCapacityUnits: "5"
+
+# Glue #
+  TributeDB:
+    Type: AWS::Glue::Database
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseInput:
+        Name: 'tribute-db'
+
+  TributeTable:
+    Type: AWS::Glue::Table
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseName: !Ref TributeDB
+      TableInput:
+        Name: 'tribute-table'
+        Parameters: { "classification": "json" }
+        Retention: 24
+        StorageDescriptor:
+          Parameters: { "endpointUrl": "https://kinesis.us-east-1.amazonaws.com", "streamName": { Ref: TributeDataStream }, "typeOfData": "kinesis" }
+          Columns:
+            - Name: streamingeventid
+              Type: string
+            - Name: gameid
+              Type: string
+            - Name: tributeid
+              Type: string
+            - Name: heartrate
+              Type: decimal
+            - Name: painlevel
+              Type: decimal
+            - Name: hydrationlevel
+              Type: decimal
+            - Name: hungerlevel
+              Type: decimal
+            - Name: xcoordinate
+              Type: decimal
+            - Name: ycoordinate
+              Type: decimal
+          InputFormat: TextInputFormat
+          Location: !Ref TributeDataStream
+          OutputFormat: HiveIgnoreKeyTextOutputFormat
+          SerdeInfo:
+            Parameters: { "paths": "gameid,heartrate,hungerlevel,hydrationlevel,painlevel,streamingeventid,tributeid,xcoordinate,ycoordinate" }
+            SerializationLibrary: org.openx.data.jsonserde.JsonSerDe
+
+  TributeStreamingJob:
+    Type: AWS::Glue::Job
+    Properties:
+      Name: tribute-streaming-job
+      Role: !Ref TributeStreamingJobRole
+      GlueVersion: "2.0"
+      MaxCapacity: 2.0
+      Command:
+        Name: gluestreaming
+        ScriptLocation: !Sub 's3://${ScriptAndOutputBucket}/script/TributeStreamingJob.py'
+      DefaultArguments:
+        "--job-language": python
+        "--TempDir": !Sub 's3://${ScriptAndOutputBucket}/temp/'
+        "--job-bookmark-option": job-bookmark-disable
+        "--KINESIS_STREAM_NAME": !Ref TributeDataStream
+        "--BUCKET_NAME": !Ref ScriptAndOutputBucket
+        "--GLUE_DATABASE_NAME": !Ref TributeDB
+        "--GLUE_TABLE_NAME": !Ref TributeTable
+        "--DYNAMO_OUTPUT_TABLE": !Ref TributeStatusTable
+        "--STATIC_DYNAMO_TABLE": !Ref GameDetailsTable
+        "--AWS_REGION": !Ref AWS::Region
+
+# S3 #
+  ScriptAndOutputBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+
+# IAM #
+  TributeStreamingJobRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "glue.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        - PolicyName: "root"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource:
+                  - "arn:aws:logs:*:*:/aws-glue/*"
+              - Effect: "Allow"
+                Action:
+                  - iam:ListRolePolicies
+                  - iam:GetRole
+                  - iam:GetRolePolicy
+                  - cloudwatch:PutMetricData
+                  - glue:GetTables
+                  - glue:GetDatabases
+                  - glue:GetConnections
+                  - glue:GetJob*
+                Resource: "*"
+              - Effect: "Allow"
+                Action:
+                  - glue:GetDatabase
+                  - glue:UpdateDatabase
+                Resource:
+                  - !Sub 'arn:${AWS::Partition}:glue:${AWS::Region}:${AWS::AccountId}:database/${TributeDB}'
+                  - !Sub 'arn:${AWS::Partition}:glue:${AWS::Region}:${AWS::AccountId}:catalog'
+              - Effect: "Allow"
+                Action:
+                  - glue:GetTable
+                  - glue:UpdateTable
+                Resource:
+                  - !Sub 'arn:${AWS::Partition}:glue:${AWS::Region}:${AWS::AccountId}:database/${TributeDB}'
+                  - !Sub 'arn:${AWS::Partition}:glue:${AWS::Region}:${AWS::AccountId}:table/${TributeDB}/${TributeTable}'
+                  - !Sub 'arn:${AWS::Partition}:glue:${AWS::Region}:${AWS::AccountId}:catalog'
+              - Effect: "Allow"
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                  - s3:ListBucket
+                Resource:
+                  - !Sub 'arn:${AWS::Partition}:s3:::${ScriptAndOutputBucket}'
+                  - !Sub 'arn:${AWS::Partition}:s3:::${ScriptAndOutputBucket}/*'
+              - Effect: "Allow"
+                Action:
+                  - kinesis:Describe*
+                  - kinesis:Get*
+                  - kinesis:List*
+                Resource:
+                  - !Sub 'arn:aws:kinesis:${AWS::Region}:${AWS::AccountId}:stream/${TributeDataStream}'
+              - Effect: "Allow"
+                Action:
+                  - dynamoDb:*
+                Resource:
+                  - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${TributeStatusTable}'
+                  - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${GameDetailsTable}'

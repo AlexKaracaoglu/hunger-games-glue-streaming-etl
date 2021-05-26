@@ -1,0 +1,13 @@
+[
+  {
+    "streamingeventid": "katnissInjuredEvent1",
+    "gameid": "gameId1",
+    "tributeid": "9",
+    "heartrate": 140,
+    "painlevel": 10,
+    "hydrationlevel": 10,
+    "hungerlevel": 0,
+    "xcoordinate": 15.5,
+    "ycoordinate": 76.0
+  }
+]
