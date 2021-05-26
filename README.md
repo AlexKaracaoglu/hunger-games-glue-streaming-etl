@@ -12,8 +12,7 @@ Using Glue Streaming ETL, we can read data off this kinesis stream, combine it w
 perform analysis, and output the most up-to-date tribute statuses to a constantly changing DynamoDB table.
 
 ## Architecture Diagram
-
-
+![Architecture Diagram](./architectureDiagram/architectureDiagram.png)
 
 ## The Data
 
